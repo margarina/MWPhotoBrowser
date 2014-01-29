@@ -15,6 +15,7 @@
     // Image Sources
     NSString *_photoPath;
     NSURL *_photoURL;
+    NSString *_photoVersion;
 
     // Image
     UIImage *_underlyingImage;
@@ -51,8 +52,8 @@ caption = _caption;
 	return [[[MWPhoto alloc] initWithFilePath:path] autorelease];
 }
 
-+ (MWPhoto *)photoWithURL:(NSURL *)url {
-	return [[[MWPhoto alloc] initWithURL:url] autorelease];
++ (MWPhoto *)photoWithURL:(NSURL *)url version:(NSString *)version {
+	return [[[MWPhoto alloc] initWithURL:url version:version] autorelease];
 }
 
 #pragma mark NSObject
@@ -71,9 +72,10 @@ caption = _caption;
 	return self;
 }
 
-- (id)initWithURL:(NSURL *)url {
+- (id)initWithURL:(NSURL *)url version:(NSString *)version {
 	if ((self = [super init])) {
 		_photoURL = [url copy];
+        _photoVersion = [version copy];
 	}
 	return self;
 }
@@ -106,13 +108,13 @@ caption = _caption;
         } else if (_photoURL) {
             // Load async from web (using SDWebImage)
             SDWebImageManager *manager = [SDWebImageManager sharedManager];
-            UIImage *cachedImage = [manager imageWithURL:_photoURL];
-            if (cachedImage) {
-                // Use the cached image immediatly
-                self.underlyingImage = cachedImage;
-                [self imageDidFinishLoadingSoDecompress];
-            } else {
-                // Start an async download
+            if (_photoVersion)
+            {
+                NSURL *customVersionURL = [_photoURL URLByAppendingPathComponent:[NSString stringWithFormat:@"/%@", _photoVersion]];
+                [manager downloadWithURL:_photoURL delegate:self customCacheURL:customVersionURL];
+            }
+            else
+            {
                 [manager downloadWithURL:_photoURL delegate:self];
             }
         } else {

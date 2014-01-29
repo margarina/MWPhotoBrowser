@@ -23,12 +23,12 @@
 // Class
 + (MWPhoto *)photoWithImage:(UIImage *)image;
 + (MWPhoto *)photoWithFilePath:(NSString *)path;
-+ (MWPhoto *)photoWithURL:(NSURL *)url;
++ (MWPhoto *)photoWithURL:(NSURL *)url version:(NSString *)version;
 
 // Init
 - (id)initWithImage:(UIImage *)image;
 - (id)initWithFilePath:(NSString *)path;
-- (id)initWithURL:(NSURL *)url;
+- (id)initWithURL:(NSURL *)url version:(NSString *)version;
 
 @end
 

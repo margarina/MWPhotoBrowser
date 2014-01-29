@@ -26,6 +26,11 @@
 - (id<MWPhoto>)photoBrowser:(MWPhotoBrowser *)photoBrowser photoAtIndex:(NSUInteger)index;
 @optional
 - (MWCaptionView *)photoBrowser:(MWPhotoBrowser *)photoBrowser captionViewForPhotoAtIndex:(NSUInteger)index;
+- (void)photoBrowser:(MWPhotoBrowser *)photoBrowser didSelectShowCommentsButtonFromItem:(UIBarButtonItem *)item;
+- (void)photoBrowserEmailDocument:(MWPhotoBrowser *)photoBrowser;
+- (void)photoBrowser:(MWPhotoBrowser *)photoBrowser didSelectShowActionsButton:(UIBarButtonItem *)item;
+
+- (void)photoBrowserPrintDocument:(MWPhotoBrowser *)photoBrowser;
 @end
 
 // MWPhotoBrowser
@@ -43,6 +48,9 @@
 
 // Set page that photo browser starts on
 - (void)setInitialPageIndex:(NSUInteger)index;
+
+- (void)emailDocument:(NSData *)documentData mimeType:(NSString *)mimeType fileName:(NSString *)filename;
+- (void)printDocument:(NSData *)documentData mimeType:(NSString *)mimeType fileName:(NSString *)documentName;
 
 @end
 

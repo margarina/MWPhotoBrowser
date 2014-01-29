@@ -42,12 +42,12 @@
 	// Navigation & controls
 	UIToolbar *_toolbar;
 	NSTimer *_controlVisibilityTimer;
-	UIBarButtonItem *_previousButton, *_nextButton, *_actionButton;
+	UIBarButtonItem *_previousButton, *_nextButton, *_actionButton, *_textButton;
     UIActionSheet *_actionsSheet;
     MBProgressHUD *_progressHUD;
     
     // Appearance
-    UIImage *_navigationBarBackgroundImageDefault, 
+    UIImage *_navigationBarBackgroundImageDefault,
     *_navigationBarBackgroundImageLandscapePhone;
     UIColor *_previousNavBarTintColor;
     UIBarStyle _previousNavBarStyle;
@@ -195,6 +195,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 	[_previousButton release];
 	[_nextButton release];
     [_actionButton release];
+    [_textButton release];
   	[_depreciatedPhotoData release];
     [self releaseAllUnderlyingPhotos];
     [[SDImageCache sharedImageCache] clearMemory]; // clear memory
@@ -224,7 +225,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 - (void)viewDidLoad {
 	
 	// View
-	self.view.backgroundColor = [UIColor blackColor];
+	self.view.backgroundColor = [UIColor navigationBarBlackColor];
 	
 	// Setup paging scrolling view
 	CGRect pagingScrollViewFrame = [self frameForPagingScrollView];
@@ -234,7 +235,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 	_pagingScrollView.delegate = self;
 	_pagingScrollView.showsHorizontalScrollIndicator = NO;
 	_pagingScrollView.showsVerticalScrollIndicator = NO;
-	_pagingScrollView.backgroundColor = [UIColor blackColor];
+	_pagingScrollView.backgroundColor = [UIColor navigationBarBlackColor];
     _pagingScrollView.contentSize = [self contentSizeForPagingScrollView];
 	[self.view addSubview:_pagingScrollView];
 	
@@ -245,13 +246,18 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
         [_toolbar setBackgroundImage:nil forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
         [_toolbar setBackgroundImage:nil forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsLandscapePhone];
     }
-    _toolbar.barStyle = UIBarStyleBlackTranslucent;
+    _toolbar.barStyle = UIBarStyleBlack;
+    [_toolbar setTintColor:[UIColor navigationBarBlackColor]];
+    [_toolbar setTranslucent:YES];
     _toolbar.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
     
     // Toolbar Items
     _previousButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"MWPhotoBrowser.bundle/images/UIBarButtonItemArrowLeft.png"] style:UIBarButtonItemStylePlain target:self action:@selector(gotoPreviousPage)];
     _nextButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"MWPhotoBrowser.bundle/images/UIBarButtonItemArrowRight.png"] style:UIBarButtonItemStylePlain target:self action:@selector(gotoNextPage)];
     _actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionButtonPressed:)];
+    _textButton = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    [_textButton setEnabled:NO];
+    [_textButton setTitleTextAttributes:@{ UITextAttributeTextColor:[UIColor whiteColor] } forState:UIControlStateDisabled];
     
     // Update
     [self reloadData];
@@ -283,48 +289,58 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     fixedLeftSpace.width = 32; // To balance action button
     UIBarButtonItem *flexSpace = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil] autorelease];
     NSMutableArray *items = [[NSMutableArray alloc] init];
-    if (_displayActionButton) [items addObject:fixedLeftSpace];
+//    if (_displayActionButton) [items addObject:fixedLeftSpace];
     [items addObject:flexSpace];
     if (numberOfPhotos > 1) [items addObject:_previousButton];
     [items addObject:flexSpace];
+    if (numberOfPhotos > 1) [items addObject:_textButton];
+    [items addObject:flexSpace];
     if (numberOfPhotos > 1) [items addObject:_nextButton];
     [items addObject:flexSpace];
-    if (_displayActionButton) [items addObject:_actionButton];
+//    if (_displayActionButton) [items addObject:_actionButton];
     [_toolbar setItems:items];
     [items release];
 	[self updateNavigation];
     
-    // Navigation buttons
-    if ([self.navigationController.viewControllers objectAtIndex:0] == self) {
-        // We're first on stack so show done button
-        UIBarButtonItem *doneButton = [[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil) style:UIBarButtonItemStylePlain target:self action:@selector(doneButtonPressed:)] autorelease];
-        // Set appearance
-        if ([UIBarButtonItem respondsToSelector:@selector(appearance)]) {
-            [doneButton setBackgroundImage:nil forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-            [doneButton setBackgroundImage:nil forState:UIControlStateNormal barMetrics:UIBarMetricsLandscapePhone];
-            [doneButton setBackgroundImage:nil forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
-            [doneButton setBackgroundImage:nil forState:UIControlStateHighlighted barMetrics:UIBarMetricsLandscapePhone];
-            [doneButton setTitleTextAttributes:[NSDictionary dictionary] forState:UIControlStateNormal];
-            [doneButton setTitleTextAttributes:[NSDictionary dictionary] forState:UIControlStateHighlighted];
-        }
-        self.navigationItem.rightBarButtonItem = doneButton;
-    } else {
-        // We're not first so show back button
-        UIViewController *previousViewController = [self.navigationController.viewControllers objectAtIndex:self.navigationController.viewControllers.count-2];
-        NSString *backButtonTitle = previousViewController.navigationItem.backBarButtonItem ? previousViewController.navigationItem.backBarButtonItem.title : previousViewController.title;
-        UIBarButtonItem *newBackButton = [[[UIBarButtonItem alloc] initWithTitle:backButtonTitle style:UIBarButtonItemStylePlain target:nil action:nil] autorelease];
-        // Appearance
-        if ([UIBarButtonItem respondsToSelector:@selector(appearance)]) {
-            [newBackButton setBackButtonBackgroundImage:nil forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-            [newBackButton setBackButtonBackgroundImage:nil forState:UIControlStateNormal barMetrics:UIBarMetricsLandscapePhone];
-            [newBackButton setBackButtonBackgroundImage:nil forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
-            [newBackButton setBackButtonBackgroundImage:nil forState:UIControlStateHighlighted barMetrics:UIBarMetricsLandscapePhone];
-            [newBackButton setTitleTextAttributes:[NSDictionary dictionary] forState:UIControlStateNormal];
-            [newBackButton setTitleTextAttributes:[NSDictionary dictionary] forState:UIControlStateHighlighted];
-        }
-        self.previousViewControllerBackButton = previousViewController.navigationItem.backBarButtonItem; // remember previous
-        previousViewController.navigationItem.backBarButtonItem = newBackButton;
+    if (_displayActionButton && self.parentViewController)
+    {
+        [self.parentViewController.navigationItem setRightBarButtonItem:_actionButton];
     }
+//    if (self.parentViewController)  // Custom (used for containers).
+//    {
+//        
+//    }
+//    else if ([self.navigationController.viewControllers objectAtIndex:0] == self) // Navigation buttons
+//    {
+//        // We're first on stack so show done button
+//        UIBarButtonItem *doneButton = [[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", nil) style:UIBarButtonItemStylePlain target:self action:@selector(doneButtonPressed:)] autorelease];
+//        // Set appearance
+//        if ([UIBarButtonItem respondsToSelector:@selector(appearance)]) {
+//            [doneButton setBackgroundImage:nil forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+//            [doneButton setBackgroundImage:nil forState:UIControlStateNormal barMetrics:UIBarMetricsLandscapePhone];
+//            [doneButton setBackgroundImage:nil forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
+//            [doneButton setBackgroundImage:nil forState:UIControlStateHighlighted barMetrics:UIBarMetricsLandscapePhone];
+//            [doneButton setTitleTextAttributes:[NSDictionary dictionary] forState:UIControlStateNormal];
+//            [doneButton setTitleTextAttributes:[NSDictionary dictionary] forState:UIControlStateHighlighted];
+//        }
+//        self.navigationItem.rightBarButtonItem = doneButton;
+//    } else {
+//        // We're not first so show back button
+//        UIViewController *previousViewController = [self.navigationController.viewControllers objectAtIndex:self.navigationController.viewControllers.count-2];
+//        NSString *backButtonTitle = previousViewController.navigationItem.backBarButtonItem ? previousViewController.navigationItem.backBarButtonItem.title : previousViewController.title;
+//        UIBarButtonItem *newBackButton = [[[UIBarButtonItem alloc] initWithTitle:backButtonTitle style:UIBarButtonItemStylePlain target:nil action:nil] autorelease];
+//        // Appearance
+//        if ([UIBarButtonItem respondsToSelector:@selector(appearance)]) {
+//            [newBackButton setBackButtonBackgroundImage:nil forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+//            [newBackButton setBackButtonBackgroundImage:nil forState:UIControlStateNormal barMetrics:UIBarMetricsLandscapePhone];
+//            [newBackButton setBackButtonBackgroundImage:nil forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
+//            [newBackButton setBackButtonBackgroundImage:nil forState:UIControlStateHighlighted barMetrics:UIBarMetricsLandscapePhone];
+//            [newBackButton setTitleTextAttributes:[NSDictionary dictionary] forState:UIControlStateNormal];
+//            [newBackButton setTitleTextAttributes:[NSDictionary dictionary] forState:UIControlStateHighlighted];
+//        }
+//        self.previousViewControllerBackButton = previousViewController.navigationItem.backBarButtonItem; // remember previous
+//        previousViewController.navigationItem.backBarButtonItem = newBackButton;
+//    }
     
     // Content offset
 	_pagingScrollView.contentOffset = [self contentOffsetForPageAtIndex:_currentPageIndex];
@@ -342,6 +358,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     [_toolbar release], _toolbar = nil;
     [_previousButton release], _previousButton = nil;
     [_nextButton release], _nextButton = nil;
+    [_textButton release], _textButton = nil;
     self.progressHUD = nil;
     [super viewDidUnload];
 }
@@ -357,7 +374,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     if (SYSTEM_VERSION_LESS_THAN(@"5")) [self viewWillLayoutSubviews];
     
     // Status bar
-    if (self.wantsFullScreenLayout && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+    if (self.wantsFullScreenLayout && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && !self.parentViewController) {
         _previousStatusBarStyle = [[UIApplication sharedApplication] statusBarStyle];
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:animated];
     }
@@ -393,7 +410,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     [self setControlsHidden:NO animated:NO permanent:YES];
     
     // Status bar
-    if (self.wantsFullScreenLayout && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+    if (self.wantsFullScreenLayout && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && !self.parentViewController) {
         [[UIApplication sharedApplication] setStatusBarStyle:_previousStatusBarStyle animated:animated];
     }
     
@@ -411,7 +428,9 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 
 - (void)setNavBarAppearance:(BOOL)animated {
     self.navigationController.navigationBar.tintColor = nil;
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    [self.navigationController.navigationBar setTranslucent:YES];
+    [self.navigationController.navigationBar setTintColor:[UIColor navigationBarBlackColor]];
     if ([[UINavigationBar class] respondsToSelector:@selector(appearance)]) {
         [self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
         [self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsLandscapePhone];
@@ -432,6 +451,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     if (_didSavePreviousStateOfNavBar) {
         self.navigationController.navigationBar.tintColor = _previousNavBarTintColor;
         self.navigationController.navigationBar.barStyle = _previousNavBarStyle;
+        [self.navigationController.navigationBar setTranslucent:NO];    // ADDED - Remove translucent.
         if ([[UINavigationBar class] respondsToSelector:@selector(appearance)]) {
             [self.navigationController.navigationBar setBackgroundImage:_navigationBarBackgroundImageDefault forBarMetrics:UIBarMetricsDefault];
             [self.navigationController.navigationBar setBackgroundImage:_navigationBarBackgroundImageLandscapePhone forBarMetrics:UIBarMetricsLandscapePhone];
@@ -742,7 +762,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     NSUInteger i;
     if (index > 0) {
         // Release anything < index - 1
-        for (i = 0; i < index-1; i++) { 
+        for (i = 0; i < index-1; i++) {
             id photo = [_photos objectAtIndex:i];
             if (photo != [NSNull null]) {
                 [photo unloadUnderlyingImage];
@@ -859,11 +879,31 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 - (void)updateNavigation {
     
 	// Title
-	if ([self numberOfPhotos] > 1) {
-		self.title = [NSString stringWithFormat:@"%i %@ %i", _currentPageIndex+1, NSLocalizedString(@"of", @"Used in the context: 'Showing 1 of 3 items'"), [self numberOfPhotos]];		
-	} else {
-		self.title = nil;
-	}
+//	if ([self numberOfPhotos] > 1) {
+//        if (self.parentViewController)  // Custom (used for containers).
+//        {
+//            self.parentViewController.title = [NSString stringWithFormat:@"%i %@ %i", _currentPageIndex+1, NSLocalizedString(@"of", @"Used in the context: 'Showing 1 of 3 items'"), [self numberOfPhotos]];
+//        }
+//        else
+//        {
+//            self.title = [NSString stringWithFormat:@"%i %@ %i", _currentPageIndex+1, NSLocalizedString(@"of", @"Used in the context: 'Showing 1 of 3 items'"), [self numberOfPhotos]];
+//        }
+//		
+//	} else {
+//        if (self.parentViewController)  // Custom (used for containers).
+//        {
+//            self.parentViewController.title = nil;
+//        }
+//        else
+//        {
+//            self.title = nil;
+//        }
+//	}
+    
+    if ([self numberOfPhotos] > 1)
+    {
+        [_textButton setTitle:[NSString stringWithFormat:@"%i %@ %i", _currentPageIndex+1, NSLocalizedString(@"of", @"Used in the context: 'Showing 1 of 3 items'"), [self numberOfPhotos]]];
+    }
 	
 	// Buttons
 	_previousButton.enabled = (_currentPageIndex > 0);
@@ -892,7 +932,6 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 
 // If permanent then we don't set timers to hide again
 - (void)setControlsHidden:(BOOL)hidden animated:(BOOL)animated permanent:(BOOL)permanent {
-    
     // Cancel any timers
     [self cancelControlHiding];
 	
@@ -900,28 +939,28 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     if (self.wantsFullScreenLayout) {
         
         // Get status bar height if visible
-        CGFloat statusBarHeight = 0;
-        if (![UIApplication sharedApplication].statusBarHidden) {
-            CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
-            statusBarHeight = MIN(statusBarFrame.size.height, statusBarFrame.size.width);
-        }
+//        CGFloat statusBarHeight = 0;
+//        if (![UIApplication sharedApplication].statusBarHidden) {
+//            CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
+//            statusBarHeight = MIN(statusBarFrame.size.height, statusBarFrame.size.width);
+//        }
         
         // Status Bar
-        if ([UIApplication instancesRespondToSelector:@selector(setStatusBarHidden:withAnimation:)]) {
-            [[UIApplication sharedApplication] setStatusBarHidden:hidden withAnimation:animated?UIStatusBarAnimationFade:UIStatusBarAnimationNone];
-        } else {
-            [[UIApplication sharedApplication] setStatusBarHidden:hidden animated:animated];
-        }
+//        if ([UIApplication instancesRespondToSelector:@selector(setStatusBarHidden:withAnimation:)]) {
+//            [[UIApplication sharedApplication] setStatusBarHidden:hidden withAnimation:animated?UIStatusBarAnimationFade:UIStatusBarAnimationNone];
+//        } else {
+////            [[UIApplication sharedApplication] setStatusBarHidden:hidden animated:animated];  // Deprecated.
+//        }
         
         // Get status bar height if visible
-        if (![UIApplication sharedApplication].statusBarHidden) {
-            CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
-            statusBarHeight = MIN(statusBarFrame.size.height, statusBarFrame.size.width);
-        }
+//        if (![UIApplication sharedApplication].statusBarHidden) {
+//            CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
+//            statusBarHeight = MIN(statusBarFrame.size.height, statusBarFrame.size.width);
+//        }
         
         // Set navigation bar frame
         CGRect navBarFrame = self.navigationController.navigationBar.frame;
-        navBarFrame.origin.y = statusBarHeight;
+        //        navBarFrame.origin.y = statusBarHeight;
         self.navigationController.navigationBar.frame = navBarFrame;
         
     }
@@ -961,10 +1000,10 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 
 // Enable/disable control visiblity timer
 - (void)hideControlsAfterDelay {
-	if (![self areControlsHidden]) {
-        [self cancelControlHiding];
-		_controlVisibilityTimer = [[NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(hideControls) userInfo:nil repeats:NO] retain];
-	}
+//	if (![self areControlsHidden]) {
+//        [self cancelControlHiding];
+//		_controlVisibilityTimer = [[NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(hideControls) userInfo:nil repeats:NO] retain];
+//	}
 }
 
 - (BOOL)areControlsHidden { return (_toolbar.alpha == 0); /* [UIApplication sharedApplication].isStatusBarHidden; */ }
@@ -986,10 +1025,15 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 #pragma mark - Misc
 
 - (void)doneButtonPressed:(id)sender {
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)actionButtonPressed:(id)sender {
+    if ([_delegate respondsToSelector:@selector(photoBrowser:didSelectShowActionsButton:)])
+    {
+        [_delegate photoBrowser:self didSelectShowActionsButton:_actionButton];
+    }
+    
     if (_actionsSheet) {
         // Dismiss
         [_actionsSheet dismissWithClickedButtonIndex:_actionsSheet.cancelButtonIndex animated:YES];
@@ -1001,22 +1045,22 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
             [self setControlsHidden:NO animated:YES permanent:YES];
             
             // Sheet
-            if ([MFMailComposeViewController canSendMail]) {
-                self.actionsSheet = [[[UIActionSheet alloc] initWithTitle:nil delegate:self
-                                                        cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil
-                                                        otherButtonTitles:NSLocalizedString(@"Save", nil), NSLocalizedString(@"Copy", nil), NSLocalizedString(@"Email", nil), nil] autorelease];
-            } else {
-                self.actionsSheet = [[[UIActionSheet alloc] initWithTitle:nil delegate:self
-                                                        cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil
-                                                        otherButtonTitles:NSLocalizedString(@"Save", nil), NSLocalizedString(@"Copy", nil), nil] autorelease];
-            }
+            self.actionsSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:BCLocalizedString(@"STR_SHOW_COMMENTS"), BCLocalizedString(@"STR_SAVE_PAGE"), nil];
+            
+            if ([MFMailComposeViewController canSendMail])
+                [self.actionsSheet addButtonWithTitle:BCLocalizedString(@"STR_EMAIL_PAGE")];
+            if ([UIPrintInteractionController isPrintingAvailable])
+                [self.actionsSheet addButtonWithTitle:BCLocalizedString(@"STR_PRINT_DOCUMENT")];
+            
+            [self.actionsSheet addButtonWithTitle:BCLocalizedString(@"STR_CANCEL")];
+            self.actionsSheet.cancelButtonIndex = self.actionsSheet.numberOfButtons - 1;
+
             _actionsSheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
             if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
                 [_actionsSheet showFromBarButtonItem:sender animated:YES];
             } else {
                 [_actionsSheet showInView:self.view];
             }
-            
         }
     }
 }
@@ -1024,20 +1068,32 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 #pragma mark - Action Sheet Delegate
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (actionSheet == _actionsSheet) {           
-        // Actions 
+    if (actionSheet == _actionsSheet) {
+        // Actions
         self.actionsSheet = nil;
-        if (buttonIndex != actionSheet.cancelButtonIndex) {
-            if (buttonIndex == actionSheet.firstOtherButtonIndex) {
-                [self savePhoto]; return;
-            } else if (buttonIndex == actionSheet.firstOtherButtonIndex + 1) {
-                [self copyPhoto]; return;	
-            } else if (buttonIndex == actionSheet.firstOtherButtonIndex + 2) {
-                [self emailPhoto]; return;
-            }
+        if (buttonIndex == actionSheet.cancelButtonIndex)
+        {
+            return;
+        }
+
+        NSString* actionTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
+        if ([actionTitle isEqualToString:BCLocalizedString(@"STR_SHOW_COMMENTS")])
+        {
+            [self showComments]; return;
+        }
+        else if ([actionTitle isEqualToString:BCLocalizedString(@"STR_SAVE_PAGE")])
+        {
+            [self savePhoto]; return;
+        }
+        else if ([actionTitle isEqualToString:BCLocalizedString(@"STR_EMAIL_PAGE")])
+        {
+            [self emailPhoto]; return;
+        }
+        else if ([actionTitle isEqualToString:BCLocalizedString(@"STR_PRINT_DOCUMENT")])
+        {
+            [self printDocument]; return;
         }
     }
-    [self hideControlsAfterDelay]; // Continue as normal...
 }
 
 #pragma mark - MBProgressHUD
@@ -1082,6 +1138,14 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 
 #pragma mark - Actions
 
+- (void)showComments
+{
+    if ([_delegate respondsToSelector:@selector(photoBrowser:didSelectShowCommentsButtonFromItem:)])
+    {
+        [_delegate photoBrowser:self didSelectShowCommentsButtonFromItem:_actionButton];
+    }
+}
+
 - (void)savePhoto {
     id <MWPhoto> photo = [self photoAtIndex:_currentPageIndex];
     if ([photo underlyingImage]) {
@@ -1092,7 +1156,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 
 - (void)actuallySavePhoto:(id<MWPhoto>)photo {
     if ([photo underlyingImage]) {
-        UIImageWriteToSavedPhotosAlbum([photo underlyingImage], self, 
+        UIImageWriteToSavedPhotosAlbum([photo underlyingImage], self,
                                        @selector(image:didFinishSavingWithError:contextInfo:), nil);
     }
 }
@@ -1120,10 +1184,31 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 }
 
 - (void)emailPhoto {
-    id <MWPhoto> photo = [self photoAtIndex:_currentPageIndex];
-    if ([photo underlyingImage]) {
-        [self showProgressHUDWithMessage:[NSString stringWithFormat:@"%@\u2026" , NSLocalizedString(@"Preparing", @"Displayed with ellipsis as 'Preparing...' when an item is in the process of being prepared")]];
-        [self performSelector:@selector(actuallyEmailPhoto:) withObject:photo afterDelay:0];
+    if ([_delegate respondsToSelector:@selector(photoBrowserEmailDocument:)])
+    {
+        [_delegate photoBrowserEmailDocument:self];
+    }
+//    id <MWPhoto> photo = [self photoAtIndex:_currentPageIndex];
+//    if ([photo underlyingImage]) {
+//        [self showProgressHUDWithMessage:[NSString stringWithFormat:@"%@\u2026" , NSLocalizedString(@"Preparing", @"Displayed with ellipsis as 'Preparing...' when an item is in the process of being prepared")]];
+//        [self performSelector:@selector(actuallyEmailPhoto:) withObject:photo afterDelay:0];
+//    }
+}
+
+- (void)emailDocument:(NSData *)documentData mimeType:(NSString *)mimeType fileName:(NSString *)filename
+{
+    if (documentData)
+    {
+        MFMailComposeViewController *emailer = [[MFMailComposeViewController alloc] init];
+        emailer.mailComposeDelegate = self;
+        //        [emailer setSubject:NSLocalizedString(@"Photo", nil)];
+        [emailer addAttachmentData:documentData mimeType:mimeType fileName:filename];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            emailer.modalPresentationStyle = UIModalPresentationPageSheet;
+        }
+        [self presentViewController:emailer animated:YES completion:nil];
+        [emailer release];
+        [self hideProgressHUD:NO];
     }
 }
 
@@ -1131,14 +1216,53 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     if ([photo underlyingImage]) {
         MFMailComposeViewController *emailer = [[MFMailComposeViewController alloc] init];
         emailer.mailComposeDelegate = self;
-        [emailer setSubject:NSLocalizedString(@"Photo", nil)];
+//        [emailer setSubject:NSLocalizedString(@"Photo", nil)];
         [emailer addAttachmentData:UIImagePNGRepresentation([photo underlyingImage]) mimeType:@"png" fileName:@"Photo.png"];
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             emailer.modalPresentationStyle = UIModalPresentationPageSheet;
         }
-        [self presentModalViewController:emailer animated:YES];
+        [self presentViewController:emailer animated:YES completion:nil];
         [emailer release];
         [self hideProgressHUD:NO];
+    }
+}
+
+- (void)printDocument
+{
+    [_delegate photoBrowserPrintDocument:self];
+}
+
+- (void)printDocument:(NSData*)documentData mimeType:(NSString *)mimeType fileName:(NSString*)documentName
+{
+    UIPrintInteractionController *pic = [UIPrintInteractionController sharedPrintController];
+    if (pic)
+    {
+        [[UINavigationBar appearance] setTintColor:[UIColor navigationBarBlackColor]];
+        UIPrintInfo *printInfo = [UIPrintInfo printInfo];
+        printInfo.jobName = documentName;
+        pic.printInfo = printInfo;
+        pic.showsPageRange = YES;
+    
+        if ([UIPrintInteractionController canPrintData:documentData]) // Apple-supported formats (.pdf & some images)
+            pic.printingItem = documentData;
+        else // Apple-un-supported formats (.doc, .xls, .ppt, ...)
+        {
+            NSFileManager* fileManager = [NSFileManager defaultManager];
+            NSString* filePath = [NSString stringWithFormat:@"%@/%@.%@", NSTemporaryDirectory(), documentName, mimeType];
+            [fileManager createFileAtPath:filePath contents:documentData attributes:nil];
+            
+            UIWebView* webView = [UIWebView new];
+            [webView loadRequest:[NSURLRequest requestWithURL:[NSURL fileURLWithPath:filePath]]];
+            pic.printFormatter = webView.viewPrintFormatter;
+        }
+        
+        void (^completionHandler)(UIPrintInteractionController *,    BOOL,           NSError *) =
+                                ^(UIPrintInteractionController *pic, BOOL completed, NSError *error)
+        {
+            if (!completed && error)
+                NSLog(@"Printing error in domain %@ with error code %u", error.domain, error.code);
+        };
+        [pic presentAnimated:YES completionHandler:completionHandler];
     }
 }
 
@@ -1151,7 +1275,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
                                                         delegate:nil cancelButtonTitle:NSLocalizedString(@"Dismiss", nil) otherButtonTitles:nil] autorelease];
 		[alert show];
     }
-	[self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
