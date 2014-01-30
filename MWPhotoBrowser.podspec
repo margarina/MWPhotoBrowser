@@ -34,7 +34,7 @@ Pod::Spec.new do |s|
     s.platform = :ios, '5.1.1'
     s.source_files = 'MWPhotoBrowser/Classes/*.{h,m}'
     s.resources = 'MWPhotoBrowser/MWPhotoBrowser.bundle'
-    s.requires_arc = true
+    s.requires_arc = false
     s.frameworks = 'MessageUI', 'ImageIO', 'QuartzCore', 'AssetsLibrary'
     s.dependency 'MBProgressHUD', '0.5'
     s.dependency 'DACircularProgress'
