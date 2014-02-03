@@ -1046,7 +1046,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
             [self setControlsHidden:NO animated:YES permanent:YES];
             
             // Sheet
-            self.actionsSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:BCLocalizedString(@"STR_SHOW_COMMENTS"), BCLocalizedString(@"STR_SAVE_PAGE"), nil];
+            self.actionsSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:BCLocalizedString(@"STR_SHOW_COMMENTS"), BCLocalizedString(@"STR_SAVE_PAGE"), BCLocalizedString(@"STR_COPY_LINK"), nil];
             
             if ([MFMailComposeViewController canSendMail])
                 [self.actionsSheet addButtonWithTitle:BCLocalizedString(@"STR_EMAIL_PAGE")];
@@ -1085,6 +1085,10 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
         else if ([actionTitle isEqualToString:BCLocalizedString(@"STR_SAVE_PAGE")])
         {
             [self savePhoto]; return;
+        }
+        else if ([actionTitle isEqualToString:BCLocalizedString(@"STR_COPY_LINK")])
+        {
+            [self copyLink]; return;
         }
         else if ([actionTitle isEqualToString:BCLocalizedString(@"STR_EMAIL_PAGE")])
         {
@@ -1182,6 +1186,14 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
         [self showProgressHUDCompleteMessage:NSLocalizedString(@"Copied", @"Informing the user an item has finished copying")];
         [self hideControlsAfterDelay]; // Continue as normal...
     }
+}
+
+- (void)copyLink {
+    [[UIPasteboard generalPasteboard] setValue:_documentURL
+                             forPasteboardType:@"public.plain-text"];
+    [self showProgressHUDWithMessage:@""];
+    [self showProgressHUDCompleteMessage:BCLocalizedString(@"STR_COPIED_LINK")];
+    [self hideProgressHUD:YES];
 }
 
 - (void)emailPhoto {
