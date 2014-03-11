@@ -19,6 +19,8 @@
 #define MWLog(x, ...)
 #endif
 
+#define iOS7 (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1)
+
 // Delgate
 @class MWPhotoBrowser;
 @protocol MWPhotoBrowserDelegate <NSObject>
