@@ -226,7 +226,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 - (void)viewDidLoad {
 	
 	// View
-	self.view.backgroundColor = [UIColor navigationBarBlackColor];
+	self.view.backgroundColor = iOS7 ? [UIColor whiteColor] : [UIColor navigationBarBlackColor];
 	
 	// Setup paging scrolling view
 	CGRect pagingScrollViewFrame = [self frameForPagingScrollView];
@@ -248,7 +248,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
         [_toolbar setBackgroundImage:nil forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsLandscapePhone];
     }
     _toolbar.barStyle = UIBarStyleBlack;
-    [_toolbar setTintColor:[UIColor navigationBarBlackColor]];
+    [_toolbar setTintColor:iOS7 ? [UIColor whiteColor] : [UIColor navigationBarBlackColor]];
     [_toolbar setTranslucent:YES];
     _toolbar.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
     
@@ -258,7 +258,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     _actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionButtonPressed:)];
     _textButton = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     [_textButton setEnabled:NO];
-    [_textButton setTitleTextAttributes:@{ UITextAttributeTextColor:[UIColor whiteColor] } forState:UIControlStateDisabled];
+    [_textButton setTitleTextAttributes:@{UITextAttributeTextColor:iOS7 ? [UIColor whiteColor] : [UIColor navigationBarBlackColor]} forState:UIControlStateDisabled];
     
     // Update
     [self reloadData];
@@ -431,7 +431,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     self.navigationController.navigationBar.tintColor = nil;
     self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     [self.navigationController.navigationBar setTranslucent:YES];
-    [self.navigationController.navigationBar setTintColor:[UIColor navigationBarBlackColor]];
+    [self.navigationController.navigationBar setTintColor:iOS7 ? [UIColor whiteColor] : [UIColor navigationBarBlackColor]];
     if ([[UINavigationBar class] respondsToSelector:@selector(appearance)]) {
         [self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
         [self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsLandscapePhone];
