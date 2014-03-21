@@ -1101,6 +1101,18 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     }
 }
 
+- (void)willPresentActionSheet:(UIActionSheet *)actionSheet
+{
+    if (iOS7) {
+        for (UIView *subview in actionSheet.subviews) {
+            if ([subview isKindOfClass:[UIButton class]]) {
+                UIButton *button = (UIButton *)subview;
+                [button setTitleColor:[UIColor businessConnectColor] forState:UIControlStateNormal];
+            }
+        }
+    }
+}
+
 #pragma mark - MBProgressHUD
 
 - (MBProgressHUD *)progressHUD {
@@ -1219,7 +1231,19 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             emailer.modalPresentationStyle = UIModalPresentationPageSheet;
         }
-        [self presentViewController:emailer animated:YES completion:nil];
+
+        if (iOS7)
+        {
+            [emailer.navigationBar setTintColor:[UIColor whiteColor]];
+            [self presentViewController:emailer animated:YES completion:^{
+                [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+            }];
+        }
+        else
+        {
+            [self presentViewController:emailer animated:YES completion:nil];
+        }
+
         [emailer release];
         [self hideProgressHUD:NO];
     }
