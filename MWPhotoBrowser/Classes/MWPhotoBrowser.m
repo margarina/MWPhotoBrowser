@@ -1250,7 +1250,8 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     UIPrintInteractionController *pic = [UIPrintInteractionController sharedPrintController];
     if (pic)
     {
-        [[UINavigationBar appearance] setTintColor:[UIColor navigationBarBlackColor]];
+        if (!iOS7)
+            [[UINavigationBar appearance] setTintColor:[UIColor navigationBarBlackColor]];
         UIPrintInfo *printInfo = [UIPrintInfo printInfo];
         printInfo.jobName = documentName;
         pic.printInfo = printInfo;
