@@ -248,7 +248,15 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
         [_toolbar setBackgroundImage:nil forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsLandscapePhone];
     }
     _toolbar.barStyle = UIBarStyleBlack;
-    [_toolbar setTintColor:iOS7 ? [UIColor whiteColor] : [UIColor navigationBarBlackColor]];
+    if (iOS7)
+    {
+        _toolbar.tintColor = [UIColor whiteColor];
+        _toolbar.barTintColor = [UIColor navigationBarBlackColor];
+    }
+    else
+    {
+        [_toolbar setTintColor:[UIColor navigationBarBlackColor]];
+    }
     [_toolbar setTranslucent:YES];
     _toolbar.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
     
