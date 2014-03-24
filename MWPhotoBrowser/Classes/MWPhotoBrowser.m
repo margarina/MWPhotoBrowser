@@ -287,7 +287,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     [_recycledPages removeAllObjects];
     
     // Toolbar
-    if (numberOfPhotos > 1 || _displayActionButton) {
+    if (numberOfPhotos > 1) {
         [self.view addSubview:_toolbar];
     } else {
         [_toolbar removeFromSuperview];
