@@ -226,7 +226,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 - (void)viewDidLoad {
 	
 	// View
-	self.view.backgroundColor = iOS7 ? [UIColor whiteColor] : [UIColor navigationBarBlackColor];
+    self.view.backgroundColor = [UIColor navigationBarBlackColor];
 	
 	// Setup paging scrolling view
 	CGRect pagingScrollViewFrame = [self frameForPagingScrollView];
