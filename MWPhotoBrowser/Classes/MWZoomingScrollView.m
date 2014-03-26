@@ -218,7 +218,7 @@
 	}
     
     if (iOS7)
-        frameToCenter.origin.y += 14;
+        frameToCenter.origin.y += 20;
     
 	// Center
 	if (!CGRectEqualToRect(_photoImageView.frame, frameToCenter))
