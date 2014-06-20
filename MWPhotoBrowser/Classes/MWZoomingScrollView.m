@@ -216,8 +216,8 @@
 	} else {
         frameToCenter.origin.y = 0;
 	}
-	
-	if (iOS7)
+    
+    if (iOS7)
         frameToCenter.origin.y -= 20;
     
 	// Center
