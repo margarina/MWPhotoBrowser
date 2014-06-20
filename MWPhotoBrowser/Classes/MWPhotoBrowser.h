@@ -28,19 +28,10 @@
 - (id<MWPhoto>)photoBrowser:(MWPhotoBrowser *)photoBrowser photoAtIndex:(NSUInteger)index;
 @optional
 - (MWCaptionView *)photoBrowser:(MWPhotoBrowser *)photoBrowser captionViewForPhotoAtIndex:(NSUInteger)index;
-- (void)photoBrowser:(MWPhotoBrowser *)photoBrowser didSelectShowCommentsButtonFromItem:(UIBarButtonItem *)item;
-- (void)photoBrowserEmailDocument:(MWPhotoBrowser *)photoBrowser;
-- (void)photoBrowser:(MWPhotoBrowser *)photoBrowser didSelectShowActionsButton:(UIBarButtonItem *)item;
-
-- (void)photoBrowserPrintDocument:(MWPhotoBrowser *)photoBrowser;
 @end
 
 // MWPhotoBrowser
-@interface MWPhotoBrowser : UIViewController <UIScrollViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate> 
-
-// Properties
-@property (nonatomic) BOOL displayActionButton;
-@property (nonatomic, copy) NSString* documentURL;
+@interface MWPhotoBrowser : UIViewController <UIScrollViewDelegate> 
 
 // Init
 - (id)initWithPhotos:(NSArray *)photosArray  __attribute__((deprecated)); // Depreciated
@@ -52,9 +43,6 @@
 // Set page that photo browser starts on
 - (void)setInitialPageIndex:(NSUInteger)index;
 
-- (void)emailDocument:(NSData *)documentData mimeType:(NSString *)mimeType fileName:(NSString *)filename;
-- (void)printDocument:(NSData *)documentData mimeType:(NSString *)mimeType fileName:(NSString *)documentName;
+- (void)enableActionButton;
 
 @end
-
-
