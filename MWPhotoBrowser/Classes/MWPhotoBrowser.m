@@ -43,7 +43,7 @@
 	// Navigation & controls
 	UIToolbar *_toolbar;
 	NSTimer *_controlVisibilityTimer;
-	UIBarButtonItem *_previousButton, *_nextButton, *_textButton;
+//	UIBarButtonItem *_previousButton, *_nextButton, *_textButton;
     MBProgressHUD *_progressHUD;
     
     // Appearance
@@ -183,9 +183,9 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 	[_visiblePages release];
 	[_recycledPages release];
 	[_toolbar release];
-	[_previousButton release];
-	[_nextButton release];
-    [_textButton release];
+//	[_previousButton release];
+//	[_nextButton release];
+//    [_textButton release];
   	[_depreciatedPhotoData release];
     [self releaseAllUnderlyingPhotos];
     [[SDImageCache sharedImageCache] clearMemory]; // clear memory
@@ -250,11 +250,11 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     _toolbar.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
     
     // Toolbar Items
-    _previousButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"MWPhotoBrowser.bundle/images/UIBarButtonItemArrowLeft.png"] style:UIBarButtonItemStylePlain target:self action:@selector(gotoPreviousPage)];
-    _nextButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"MWPhotoBrowser.bundle/images/UIBarButtonItemArrowRight.png"] style:UIBarButtonItemStylePlain target:self action:@selector(gotoNextPage)];
-    _textButton = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-    [_textButton setEnabled:NO];
-    [_textButton setTitleTextAttributes:@{UITextAttributeTextColor:iOS7 ? [UIColor whiteColor] : [UIColor navigationBarBlackColor]} forState:UIControlStateDisabled];
+//    _previousButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"MWPhotoBrowser.bundle/images/UIBarButtonItemArrowLeft.png"] style:UIBarButtonItemStylePlain target:self action:@selector(gotoPreviousPage)];
+//    _nextButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"MWPhotoBrowser.bundle/images/UIBarButtonItemArrowRight.png"] style:UIBarButtonItemStylePlain target:self action:@selector(gotoNextPage)];
+//    _textButton = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+//    [_textButton setEnabled:NO];
+//    [_textButton setTitleTextAttributes:@{UITextAttributeTextColor:iOS7 ? [UIColor whiteColor] : [UIColor navigationBarBlackColor]} forState:UIControlStateDisabled];
     
     // Update
     [self reloadData];
@@ -282,21 +282,21 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     }
     
     // Toolbar items & navigation
-    UIBarButtonItem *fixedLeftSpace = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:self action:nil] autorelease];
-    fixedLeftSpace.width = 32; // To balance action button
-    UIBarButtonItem *flexSpace = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil] autorelease];
-    NSMutableArray *items = [[NSMutableArray alloc] init];
+//    UIBarButtonItem *fixedLeftSpace = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:self action:nil] autorelease];
+//    fixedLeftSpace.width = 32; // To balance action button
+//    UIBarButtonItem *flexSpace = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil] autorelease];
+//    NSMutableArray *items = [[NSMutableArray alloc] init];
 
-    [items addObject:flexSpace];
-    if (numberOfPhotos > 1) [items addObject:_previousButton];
-    [items addObject:flexSpace];
-    if (numberOfPhotos > 1) [items addObject:_textButton];
-    [items addObject:flexSpace];
-    if (numberOfPhotos > 1) [items addObject:_nextButton];
-    [items addObject:flexSpace];
+//    [items addObject:flexSpace];
+//    if (numberOfPhotos > 1) [items addObject:_previousButton];
+//    [items addObject:flexSpace];
+//    if (numberOfPhotos > 1) [items addObject:_textButton];
+//    [items addObject:flexSpace];
+//    if (numberOfPhotos > 1) [items addObject:_nextButton];
+//    [items addObject:flexSpace];
 
-    [_toolbar setItems:items];
-    [items release];
+//    [_toolbar setItems:items];
+//    [items release];
 	[self updateNavigation];
     
     // Content offset
@@ -313,9 +313,9 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     [_visiblePages release], _visiblePages = nil;
     [_recycledPages release], _recycledPages = nil;
     [_toolbar release], _toolbar = nil;
-    [_previousButton release], _previousButton = nil;
-    [_nextButton release], _nextButton = nil;
-    [_textButton release], _textButton = nil;
+//    [_previousButton release], _previousButton = nil;
+//    [_nextButton release], _nextButton = nil;
+//    [_textButton release], _textButton = nil;
     self.progressHUD = nil;
     [super viewDidUnload];
 }
@@ -857,14 +857,14 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 //        }
 //	}
     
-    if ([self numberOfPhotos] > 1)
-    {
-        [_textButton setTitle:[NSString stringWithFormat:@"%i %@ %i", _currentPageIndex+1, NSLocalizedString(@"of", @"Used in the context: 'Showing 1 of 3 items'"), [self numberOfPhotos]]];
-    }
-	
-	// Buttons
-	_previousButton.enabled = (_currentPageIndex > 0);
-	_nextButton.enabled = (_currentPageIndex < [self numberOfPhotos]-1);
+//    if ([self numberOfPhotos] > 1)
+//    {
+//        [_textButton setTitle:[NSString stringWithFormat:@"%i %@ %i", _currentPageIndex+1, NSLocalizedString(@"of", @"Used in the context: 'Showing 1 of 3 items'"), [self numberOfPhotos]]];
+//    }
+//	
+//	// Buttons
+//	_previousButton.enabled = (_currentPageIndex > 0);
+//	_nextButton.enabled = (_currentPageIndex < [self numberOfPhotos]-1);
 	
 }
 
