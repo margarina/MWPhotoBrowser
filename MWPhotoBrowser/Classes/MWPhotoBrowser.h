@@ -43,4 +43,8 @@
 // Set page that photo browser starts on
 - (void)setInitialPageIndex:(NSUInteger)index;
 
+// Hack upon a hack ...
+@property (nonatomic, strong) UIProgressView *downloadProgress;
+- (void)setControlsHidden:(BOOL)hidden animated:(BOOL)animated permanent:(BOOL)permanent;
+
 @end
