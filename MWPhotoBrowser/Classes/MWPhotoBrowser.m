@@ -43,7 +43,7 @@
 	// Navigation & controls
 	UIToolbar *_toolbar;
 	NSTimer *_controlVisibilityTimer;
-//	UIBarButtonItem *_previousButton, *_nextButton, *_textButton;
+    //	UIBarButtonItem *_previousButton, *_nextButton, *_textButton;
     MBProgressHUD *_progressHUD;
     
     // Appearance
@@ -183,9 +183,9 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 	[_visiblePages release];
 	[_recycledPages release];
 	[_toolbar release];
-//	[_previousButton release];
-//	[_nextButton release];
-//    [_textButton release];
+    //	[_previousButton release];
+    //	[_nextButton release];
+    //    [_textButton release];
   	[_depreciatedPhotoData release];
     [self releaseAllUnderlyingPhotos];
     [[SDImageCache sharedImageCache] clearMemory]; // clear memory
@@ -250,11 +250,11 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     _toolbar.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
     
     // Toolbar Items
-//    _previousButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"MWPhotoBrowser.bundle/images/UIBarButtonItemArrowLeft.png"] style:UIBarButtonItemStylePlain target:self action:@selector(gotoPreviousPage)];
-//    _nextButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"MWPhotoBrowser.bundle/images/UIBarButtonItemArrowRight.png"] style:UIBarButtonItemStylePlain target:self action:@selector(gotoNextPage)];
-//    _textButton = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-//    [_textButton setEnabled:NO];
-//    [_textButton setTitleTextAttributes:@{UITextAttributeTextColor:iOS7 ? [UIColor whiteColor] : [UIColor navigationBarBlackColor]} forState:UIControlStateDisabled];
+    //    _previousButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"MWPhotoBrowser.bundle/images/UIBarButtonItemArrowLeft.png"] style:UIBarButtonItemStylePlain target:self action:@selector(gotoPreviousPage)];
+    //    _nextButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"MWPhotoBrowser.bundle/images/UIBarButtonItemArrowRight.png"] style:UIBarButtonItemStylePlain target:self action:@selector(gotoNextPage)];
+    //    _textButton = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    //    [_textButton setEnabled:NO];
+    //    [_textButton setTitleTextAttributes:@{UITextAttributeTextColor:iOS7 ? [UIColor whiteColor] : [UIColor navigationBarBlackColor]} forState:UIControlStateDisabled];
     
     // Update
     [self reloadData];
@@ -282,21 +282,21 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     }
     
     // Toolbar items & navigation
-//    UIBarButtonItem *fixedLeftSpace = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:self action:nil] autorelease];
-//    fixedLeftSpace.width = 32; // To balance action button
-//    UIBarButtonItem *flexSpace = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil] autorelease];
-//    NSMutableArray *items = [[NSMutableArray alloc] init];
-
-//    [items addObject:flexSpace];
-//    if (numberOfPhotos > 1) [items addObject:_previousButton];
-//    [items addObject:flexSpace];
-//    if (numberOfPhotos > 1) [items addObject:_textButton];
-//    [items addObject:flexSpace];
-//    if (numberOfPhotos > 1) [items addObject:_nextButton];
-//    [items addObject:flexSpace];
-
-//    [_toolbar setItems:items];
-//    [items release];
+    //    UIBarButtonItem *fixedLeftSpace = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:self action:nil] autorelease];
+    //    fixedLeftSpace.width = 32; // To balance action button
+    //    UIBarButtonItem *flexSpace = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil] autorelease];
+    //    NSMutableArray *items = [[NSMutableArray alloc] init];
+    
+    //    [items addObject:flexSpace];
+    //    if (numberOfPhotos > 1) [items addObject:_previousButton];
+    //    [items addObject:flexSpace];
+    //    if (numberOfPhotos > 1) [items addObject:_textButton];
+    //    [items addObject:flexSpace];
+    //    if (numberOfPhotos > 1) [items addObject:_nextButton];
+    //    [items addObject:flexSpace];
+    
+    //    [_toolbar setItems:items];
+    //    [items release];
 	[self updateNavigation];
     
     // Content offset
@@ -313,9 +313,9 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     [_visiblePages release], _visiblePages = nil;
     [_recycledPages release], _recycledPages = nil;
     [_toolbar release], _toolbar = nil;
-//    [_previousButton release], _previousButton = nil;
-//    [_nextButton release], _nextButton = nil;
-//    [_textButton release], _textButton = nil;
+    //    [_previousButton release], _previousButton = nil;
+    //    [_nextButton release], _nextButton = nil;
+    //    [_textButton release], _textButton = nil;
     self.progressHUD = nil;
     [super viewDidUnload];
 }
@@ -823,7 +823,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
 	// Hide controls when dragging begins
-//	[self setControlsHidden:YES animated:YES permanent:NO];
+    //	[self setControlsHidden:YES animated:YES permanent:NO];
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
@@ -836,35 +836,35 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 - (void)updateNavigation {
     
 	// Title
-//	if ([self numberOfPhotos] > 1) {
-//        if (self.parentViewController)  // Custom (used for containers).
-//        {
-//            self.parentViewController.title = [NSString stringWithFormat:@"%i %@ %i", _currentPageIndex+1, NSLocalizedString(@"of", @"Used in the context: 'Showing 1 of 3 items'"), [self numberOfPhotos]];
-//        }
-//        else
-//        {
-//            self.title = [NSString stringWithFormat:@"%i %@ %i", _currentPageIndex+1, NSLocalizedString(@"of", @"Used in the context: 'Showing 1 of 3 items'"), [self numberOfPhotos]];
-//        }
-//		
-//	} else {
-//        if (self.parentViewController)  // Custom (used for containers).
-//        {
-//            self.parentViewController.title = nil;
-//        }
-//        else
-//        {
-//            self.title = nil;
-//        }
-//	}
+    //	if ([self numberOfPhotos] > 1) {
+    //        if (self.parentViewController)  // Custom (used for containers).
+    //        {
+    //            self.parentViewController.title = [NSString stringWithFormat:@"%i %@ %i", _currentPageIndex+1, NSLocalizedString(@"of", @"Used in the context: 'Showing 1 of 3 items'"), [self numberOfPhotos]];
+    //        }
+    //        else
+    //        {
+    //            self.title = [NSString stringWithFormat:@"%i %@ %i", _currentPageIndex+1, NSLocalizedString(@"of", @"Used in the context: 'Showing 1 of 3 items'"), [self numberOfPhotos]];
+    //        }
+    //
+    //	} else {
+    //        if (self.parentViewController)  // Custom (used for containers).
+    //        {
+    //            self.parentViewController.title = nil;
+    //        }
+    //        else
+    //        {
+    //            self.title = nil;
+    //        }
+    //	}
     
-//    if ([self numberOfPhotos] > 1)
-//    {
-//        [_textButton setTitle:[NSString stringWithFormat:@"%i %@ %i", _currentPageIndex+1, NSLocalizedString(@"of", @"Used in the context: 'Showing 1 of 3 items'"), [self numberOfPhotos]]];
-//    }
-//	
-//	// Buttons
-//	_previousButton.enabled = (_currentPageIndex > 0);
-//	_nextButton.enabled = (_currentPageIndex < [self numberOfPhotos]-1);
+    //    if ([self numberOfPhotos] > 1)
+    //    {
+    //        [_textButton setTitle:[NSString stringWithFormat:@"%i %@ %i", _currentPageIndex+1, NSLocalizedString(@"of", @"Used in the context: 'Showing 1 of 3 items'"), [self numberOfPhotos]]];
+    //    }
+    //
+    //	// Buttons
+    //	_previousButton.enabled = (_currentPageIndex > 0);
+    //	_nextButton.enabled = (_currentPageIndex < [self numberOfPhotos]-1);
 	
 }
 
@@ -896,24 +896,24 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
     if (self.wantsFullScreenLayout) {
         
         // Get status bar height if visible
-//        CGFloat statusBarHeight = 0;
-//        if (![UIApplication sharedApplication].statusBarHidden) {
-//            CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
-//            statusBarHeight = MIN(statusBarFrame.size.height, statusBarFrame.size.width);
-//        }
+        //        CGFloat statusBarHeight = 0;
+        //        if (![UIApplication sharedApplication].statusBarHidden) {
+        //            CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
+        //            statusBarHeight = MIN(statusBarFrame.size.height, statusBarFrame.size.width);
+        //        }
         
         // Status Bar
-//        if ([UIApplication instancesRespondToSelector:@selector(setStatusBarHidden:withAnimation:)]) {
-//            [[UIApplication sharedApplication] setStatusBarHidden:hidden withAnimation:animated?UIStatusBarAnimationFade:UIStatusBarAnimationNone];
-//        } else {
-////            [[UIApplication sharedApplication] setStatusBarHidden:hidden animated:animated];  // Deprecated.
-//        }
+        //        if ([UIApplication instancesRespondToSelector:@selector(setStatusBarHidden:withAnimation:)]) {
+        //            [[UIApplication sharedApplication] setStatusBarHidden:hidden withAnimation:animated?UIStatusBarAnimationFade:UIStatusBarAnimationNone];
+        //        } else {
+        ////            [[UIApplication sharedApplication] setStatusBarHidden:hidden animated:animated];  // Deprecated.
+        //        }
         
         // Get status bar height if visible
-//        if (![UIApplication sharedApplication].statusBarHidden) {
-//            CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
-//            statusBarHeight = MIN(statusBarFrame.size.height, statusBarFrame.size.width);
-//        }
+        //        if (![UIApplication sharedApplication].statusBarHidden) {
+        //            CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
+        //            statusBarHeight = MIN(statusBarFrame.size.height, statusBarFrame.size.width);
+        //        }
         
         // Set navigation bar frame
         CGRect navBarFrame = self.navigationController.navigationBar.frame;
@@ -937,6 +937,7 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 	[self.navigationController.navigationBar setAlpha:alpha];
     [self.navigationController.toolbar setAlpha:alpha];
 	[_toolbar setAlpha:alpha];
+    [_downloadProgress setAlpha:alpha];
     for (UIView *v in captionViews) v.alpha = alpha;
 	if (animated) [UIView commitAnimations];
 	
@@ -958,10 +959,10 @@ navigationBarBackgroundImageLandscapePhone = _navigationBarBackgroundImageLandsc
 
 // Enable/disable control visiblity timer
 - (void)hideControlsAfterDelay {
-//	if (![self areControlsHidden]) {
-//        [self cancelControlHiding];
-//		_controlVisibilityTimer = [[NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(hideControls) userInfo:nil repeats:NO] retain];
-//	}
+    //	if (![self areControlsHidden]) {
+    //        [self cancelControlHiding];
+    //		_controlVisibilityTimer = [[NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(hideControls) userInfo:nil repeats:NO] retain];
+    //	}
 }
 
 - (BOOL)areControlsHidden { return (_toolbar.alpha == 0); /* [UIApplication sharedApplication].isStatusBarHidden; */ }
