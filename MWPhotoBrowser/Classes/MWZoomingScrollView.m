@@ -30,6 +30,12 @@
 
 - (id)initWithPhotoBrowser:(MWPhotoBrowser *)browser {
     if ((self = [super init])) {
+    	
+    	// Stuck-scrollling fix for iOS 8
+        if ([self respondsToSelector:@selector(layoutMarginsDidChange)])
+        {
+            self.scrollEnabled = NO;
+        }
         
         // Delegate
         self.photoBrowser = browser;
