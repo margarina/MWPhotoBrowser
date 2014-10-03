@@ -31,7 +31,7 @@
 - (id)initWithPhotoBrowser:(MWPhotoBrowser *)browser {
     if ((self = [super init])) {
     	
-    	// Stuck-scrollling fix for iOS 8
+    	// Scrollling & zooming fix for iOS 8
         if ([self respondsToSelector:@selector(layoutMarginsDidChange)])
         {
             self.scrollEnabled = NO;
@@ -239,7 +239,23 @@
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+	// Scrollling & zooming fix for iOS 8
+        if ([self respondsToSelector:@selector(layoutMarginsDidChange)])
+        {
+        	[self setNeedsLayout];
+        	[self layoutIfNeeded];
+    	}
 	[_photoBrowser cancelControlHiding];
+}
+
+- (void)scrollViewDidZoom:(UIScrollView *)scrollView
+{
+	// Scrollling & zooming fix for iOS 8
+    	if ([self respondsToSelector:@selector(layoutMarginsDidChange)])
+    	{
+        	[self setNeedsLayout];
+        	[self layoutIfNeeded];
+    	}
 }
 
 - (void)scrollViewWillBeginZooming:(UIScrollView *)scrollView withView:(UIView *)view {
